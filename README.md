@@ -6,9 +6,7 @@ A simple IoC library in Typescript using Dependency injection pattern
 Using npm:
 
 $ npm install iocdi-ts
-Using yarn:
 
-$ yarn add iocdi-ts
 
 ## Container API
 Container will handle dependencies by injecting dependencies you want and also providing decorators.
@@ -73,5 +71,51 @@ const AvocadoPrice = fruitPrice.getPrice('avocado','mexico', 'USD');
 
 console.log(AvocadoPrice)
 /* logs $30 */
+
+```
+
+## Troubleshoot
+
+1. `.add(anotherDependency)` will expect to be called once `inject(dependency)` is called.
+
+For exmaple, when initialising a container instance, this will throw an error. 
+
+```
+
+
+const container = new Container();
+
+class FruitPriceService {
+  constructor(
+    private readonly api: ApiService,
+    private readonly logger: Logger
+  ) {
+    this.logger.log("Launching  FruitPriceService");
+  }
+  async getPrice(fruit: string, country: string, symbol: string) {
+    return await this.api.getData(
+      `latest?fruit=${fruit}&country=${country}&symbol=${symbol)}`
+    );
+  }
+}
+
+const myService = container. 
+        .inject({ref: Logger, source: Logger, type: 'class'})
+        .into(FruitPriceService);
+    })
+
+/* Initialising service this way will throw error 'Dependency missing' because `FruitPriceService` is expecting Api service to be injected before we call `.into(FruitPriceService)`  */
+```
+
+To avoid, make sure you are registering all dependencies you agreed to inject. 
+
+```
+
+const myService  = container
+  .inject({ref: Logger, source: Logger, type: 'class'})
+  .add({ref: URL, source: 'https://api.fruitworld.io, type: 'param' })
+  .and({ref: ApiService, source: ApiService, type: 'class'})
+  .into(FruitPriceService)
+
 
 ```

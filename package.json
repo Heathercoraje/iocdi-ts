@@ -7,8 +7,8 @@
   "author": "",
   "type": "module",
   "scripts": {
-    "build": "$(yarn bin)/tsc",
-    "lint": "$(yarn bin)/tslint --project .",
+    "build": "tsc",
+    "lint": "tslint --project .",
     "test": "npm run jest",
     "jest": "jest --no-coverage --verbose",
     "prepublish": "yarn build"
